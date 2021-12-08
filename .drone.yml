@@ -1,0 +1,109 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+trigger:
+  branch:
+    - master
+    - main
+  event:
+    - push
+    - promote
+
+clone:
+  disable: true
+
+steps:
+  - name: git-clone
+    image: alpine/git
+    environment:
+      HTTP_PROXY:
+        from_secret: prod_http_proxy
+      HTTPS_PROXY:
+        from_secret: prod_https_proxy
+    commands:
+      - git clone ${DRONE_GIT_HTTP_URL} --depth 4 .
+      - git checkout ${DRONE_COMMIT}
+
+  # see http://plugins.drone.io/meltwater/drone-cache/
+  - name: restore-cache
+    image: meltwater/drone-cache
+    settings:
+      backend: filesystem
+      restore: true
+      cache_key: '{{ .Repo.Name }}_{{ checksum "package-lock.json" }}_{{ arch }}_{{ os }}'
+      mount:
+        - .tmp/.npm-cache
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: deps
+    image: node:16
+    commands:
+      - 'npm config set cache .tmp/.npm-cache --global'
+      - 'npm --registry https://registry.npm.taobao.org install'
+
+  - name: rebuild-cache
+    image: meltwater/drone-cache
+    settings:
+      backend: filesystem
+      rebuild: true
+      cache_key: '{{ .Repo.Name }}_{{ checksum "package-lock.json" }}_{{ arch }}_{{ os }}'
+      mount:
+        - .tmp/.npm-cache
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: publish-image
+    # see http://plugins.drone.io/drone-plugins/drone-docker/
+    image: plugins/docker
+    settings:
+      insecure: true
+      repo: 192.168.10.101:5000/expressway-mapbackend
+      registry: 192.168.10.101:5000
+      mirror:
+        from_secret: prod_docker_registry_mirror
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA:0:8}
+
+  - name: deploy
+    # see http://plugins.drone.io/pelotech/drone-helm3/
+    image: pelotech/drone-helm3:0.14
+    pull: if-not-exists
+    # network_mode: host
+    # see https://docs.drone.io/pipeline/environment/syntax/
+    environment:
+      BASE_URL:
+        from_secret: prod_base_url
+      MONGODB_URL:
+        from_secret: prod_expressway_mongodb_url
+    settings:
+      # debug: true
+      helm_command: upgrade
+      chart: ./ci/helm/expressway-mapbackend
+      release: expressway-mapbackend
+      namespace: ditto-expressway
+      values: "ingress.enabled=true,\
+        ingress.hosts[0].host=expressway-map.$${BASE_URL},\
+        ingress.hosts[0].paths[0].path=/api,\
+        image.tag=${DRONE_COMMIT_SHA:0:8},\
+        image.repository=192.168.10.101:5000/expressway-mapbackend,\
+        externals.mongodb.url=$${MONGODB_URL}"
+
+      kube_api_server:
+        from_secret: prod_kube_api_server
+      kube_service_account:
+        from_secret: prod_kube_service_account
+      kube_token:
+        from_secret: prod_kube_token
+      kube_certificate:
+        from_secret: prod_kube_certificate
+      atomic_upgrade: true
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone-volumes/cache
