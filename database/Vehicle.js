@@ -4,20 +4,18 @@ const DB_URL = require("./config");
 const uri = DB_URL
 const client = new MongoClient(uri);
 
-async function find(skip = 0) {
-    if(!client.isConnected()) await client.connect();
-    const database = client.db('digitaltwin');
-    const gantry = database.collection('Vehicle');
-    // define an empty query document
-    const query = {};
-    const limit = 200;
-    const cursor = gantry.find(query).limit(limit).skip(skip);
-    // await cursor.forEach(console.dir);
-    const allValues = await cursor.toArray();
-    // console.log({items:allValues,cursor:limit+skip})
-    return { items: allValues, cursor: limit + skip }
+async function find(skip = 0, limit = 200, query = {}) {
+  if (!client.isConnected()) await client.connect();
+  const database = client.db('digitaltwin');
+  const vehicle = database.collection('Vehicle');
+  const cursor = vehicle.find(query).limit(limit).skip(skip);
+  const allValues = await cursor.toArray();
+  const count = await vehicle.countDocuments(query);
+  return { items: allValues, skip: limit + skip, count }
 }
 
+// find(0, 200, {}).then(data => { console.log(data) })
+
 module.exports = {
-  find
+  find,
 }
