@@ -9,7 +9,7 @@ router.get('/nodes', function(req, res, next) {
 
 router.get('/edges', function(req, res, next) {
   let {weight} = req.query
-  console.log(weight)
+  // console.log(weight)
   weight=weight?parseFloat(weight):0.1
   getEdges(weight,(data)=>{
     res.send(data);
