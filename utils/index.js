@@ -28,8 +28,8 @@ function parseCsv(records, weight, callback) {
           colHeaders.push(records[i][j])
         } else {
           const probability = new Number(records[i][j])
-          const source = colHeaders[i - 1]
-          const target = rowHeaders[j - 1]
+          const target = colHeaders[i - 1]
+          const source = rowHeaders[j - 1]
           if (probability > weight && source !== target) { //weight==0.1时，2300
             edges.push({
               source, target, edgeWeight: probability
