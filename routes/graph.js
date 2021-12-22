@@ -1,17 +1,23 @@
 var express = require('express');
 var router = express.Router();
-var {getNodes,getEdges}=require('../utils/index')
+var { getNodes, getEdges } = require('../utils/index')
 
-router.get('/nodes', function(req, res, next) {
-  const nodes=getNodes()
+router.get('/nodes', function (req, res, next) {
+  const nodes = getNodes()
   res.send(nodes);
 });
 
-router.get('/edges', function(req, res, next) {
-  let {weight} = req.query
-  // console.log(weight)
-  weight=weight?parseFloat(weight):0.1
-  getEdges(weight,(data)=>{
+router.post('/edges', function (req, res, next) {
+  let { weight } = req.body
+  weight = weight ? weight : {}
+  if (!weight.hasOwnProperty('min')) {
+    weight['min'] = 0.1
+  }
+  if (!weight.hasOwnProperty('max')) {
+    weight['max'] = 1
+  }
+  console.log(weight)
+  getEdges(weight, (data) => {
     res.send(data);
   })
 

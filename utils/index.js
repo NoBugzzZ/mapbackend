@@ -13,7 +13,7 @@ function readCsv(callback) {
 }
 
 function parseCsv(records, weight, callback) {
-  // console.log(records,weight)
+  const { min, max } = weight
   let rowHeaders = []
   let colHeaders = []
   let edges = []
@@ -30,10 +30,18 @@ function parseCsv(records, weight, callback) {
           const probability = new Number(records[i][j])
           const target = colHeaders[i - 1]
           const source = rowHeaders[j - 1]
-          if (probability > weight && source !== target) { //weight==0.1时，2300
-            edges.push({
-              source, target, edgeWeight: probability
-            })
+          if (min === 0) {
+            if (probability > min && probability <= max && source !== target) { //weight==0.1时，2300
+              edges.push({
+                source, target, edgeWeight: probability
+              })
+            }
+          } else {
+            if (probability >= min && probability <= max && source !== target) { //weight==0.1时，2300
+              edges.push({
+                source, target, edgeWeight: probability
+              })
+            }
           }
         }
       }
