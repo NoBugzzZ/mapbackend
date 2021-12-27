@@ -71,7 +71,7 @@ const { parse } = require('csv-parse')
 var fs = require('fs');
 
 function readCsv(callback) {
-  return fs.readFile('utils/final_1101-1107-num.csv', 'utf-8', function (err, data) {
+  return fs.readFile('utils/final2_1101-1107-num.csv', 'utf-8', function (err, data) {
     if (err) {
       console.log(err);
     } else {
