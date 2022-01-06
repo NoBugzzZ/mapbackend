@@ -6,8 +6,8 @@ const client = new MongoClient(uri);
 
 async function find(skip = 0, limit = 200, query = {}) {
   if (!client.isConnected()) await client.connect();
-  const database = client.db('digitaltwin');
-  const vehicle = database.collection('Vehicle');
+  const database = client.db('DigitalModel');
+  const vehicle = database.collection('VehicleDigital');
   const cursor = vehicle.find(query).limit(limit).skip(skip);
   const allValues = await cursor.toArray();
   const count = await vehicle.countDocuments(query);

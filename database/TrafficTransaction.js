@@ -6,7 +6,7 @@ const client = new MongoClient(uri);
 
 async function find(skip = 0, limit = 200, query = {}) {
   if (!client.isConnected()) await client.connect();
-  const database = client.db('digitaltwin');
+  const database = client.db('EntityModel');
   const trafficTransaction = database.collection('TrafficTransaction');
   const cursor = trafficTransaction.find(query).limit(limit).skip(skip);
   const allValues = await cursor.toArray();
