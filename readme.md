@@ -22,4 +22,10 @@ DB_URL=${url} npm start
 ```
 DB_URL=mongodb://localhost:27017/ npm start
 ```
-   
+
+## 端口
+express框架默认使用的端口为3000，若想要自定义端口，一个完整例子如下
+```
+DB_URL=mongodb://localhost:27017/ PORT=3000 npm start
+```
+修改3000为你想要的端口即可。

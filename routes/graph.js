@@ -4,16 +4,19 @@ var { getNodes, getEdges } = require('../utils/index')
 var GantryInfo = require('../database/GantryInfo')
 
 router.get('/nodes', function (req, res, next) {
-  GantryInfo.find().then(data=>{
-    let nodes={}
-    data.forEach(d=>{
-      const hexID=d['门架HEX字符串']
-      const longitude=d['经度']
-      const latitude=d['纬度']
-      const flag=d['门架标志']===0?0:1
-      nodes[hexID]=[longitude,latitude,flag]
-    })
-    res.send(nodes);
+  // GantryInfo.find().then(data=>{
+  //   let nodes={}
+  //   data.forEach(d=>{
+  //     const hexID=d['门架HEX字符串']
+  //     const longitude=d['经度']
+  //     const latitude=d['纬度']
+  //     const flag=d['门架标志']===0?0:1
+  //     nodes[hexID]=[longitude,latitude,flag]
+  //   })
+  //   res.send(nodes);
+  // })
+  getNodes((data) => {
+    res.send(data)
   })
 });
 
