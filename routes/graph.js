@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { getNodes, getEdges } = require('../utils/index')
+var { getNodes, getEdges, getSimplepaire } = require('../utils/index')
 var GantryInfo = require('../database/GantryInfo')
 
 router.get('/nodes', function (req, res, next) {
@@ -35,5 +35,9 @@ router.post('/edges', function (req, res, next) {
   })
 
 });
+
+router.get('/simplepair', function (req, res, next) {
+  res.send(getSimplepaire())
+})
 
 module.exports = router;

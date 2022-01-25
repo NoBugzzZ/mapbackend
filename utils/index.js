@@ -83,7 +83,20 @@ function getNodes(callback) {
   })
 }
 
+const simplepaireData=require('./simlpepair.json')
+
+function getSimplepaire(){
+  let res=[]
+  simplepaireData.forEach(value=>{
+    const source=value['起始门架HEX']
+    const target=value['下游门架HEX']
+    res.push({source,target})
+  })
+  return res
+}
+
 module.exports = {
   getNodes,
   getEdges,
+  getSimplepaire,
 }
