@@ -63,11 +63,14 @@ function parseGantryInfo(records,callback){
     const longitude=record[10]
     const hexID=record[11]
     const type=record[5]
-    res[hexID]=[
-      longitude,
-      latitude,
-      type==="0"?0:1
-    ]
+    const status=record[13]
+    if(status!=='停用'){
+      res[hexID]=[
+        longitude,
+        latitude,
+        type==="0"?0:1
+      ]
+    }
   })
   callback(res)
 }
