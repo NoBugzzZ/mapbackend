@@ -61,10 +61,10 @@ function parseGantryInfo(records,callback){
   let newRecords=_.cloneDeep(records)
   newRecords.splice(0,1)
   newRecords.forEach(record=>{
-    const latitude=record[5]
-    const longitude=record[6]
-    const hexID=record[8]
-    const type=record[10]
+    const latitude=record[9]
+    const longitude=record[10]
+    const hexID=record[11]
+    const type=record[5]
     res[hexID]=[
       longitude,
       latitude,
@@ -75,7 +75,7 @@ function parseGantryInfo(records,callback){
 }
 
 function getNodes(callback) {
-  readCsv('utils/NewGantryInfo.csv',(data) => {
+  readCsv('utils/GantryInfo.csv',(data) => {
     parse(data, {
     }, function (err, records) {
       parseGantryInfo(records,callback)
