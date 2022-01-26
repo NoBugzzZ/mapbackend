@@ -1,5 +1,3 @@
-var graphData = require('./graph.json')
-
 const { parse } = require('csv-parse')
 
 var fs = require('fs');
