@@ -61,9 +61,9 @@ function parseGantryInfo(records,callback){
   newRecords.forEach(record=>{
     const latitude=record[9]
     const longitude=record[10]
-    const hexID=record[11]
+    const hexID=record[15]
     const type=record[5]
-    const status=record[13]
+    const status=record[12]
     if(status!=='停用'){
       res[hexID]=[
         longitude,
