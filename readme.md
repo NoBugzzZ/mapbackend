@@ -29,3 +29,6 @@ express框架默认使用的端口为3000，若想要自定义端口，一个完
 DB_URL=mongodb://localhost:27017/ PORT=3000 npm start
 ```
 修改3000为你想要的端口即可。
+
+## 稀疏矩阵
+utils/final2_1101-1107-num.csv文件是一个典型的稀疏矩阵，因此编写了一个简易的脚本script.js，将稀疏矩阵转换为了utils/file.csv这样的三元组。为了方便边权重的计算，额外添加了total字段。
