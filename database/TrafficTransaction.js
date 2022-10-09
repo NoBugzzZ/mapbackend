@@ -12,7 +12,7 @@ async function find(skip = 0, limit = 200, query = {}) {
   const cursor = trafficTransaction.find(query).limit(limit).skip(skip);
   const allValues = await cursor.toArray();
   if(count<0){
-    const count = await trafficTransaction.countDocuments(query);
+    count = await trafficTransaction.countDocuments(query);
   }
   return { items: allValues, skip: limit + skip, count }
 }
