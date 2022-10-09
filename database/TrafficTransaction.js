@@ -3,6 +3,7 @@ const DB_URL = require("./config");
 
 const uri = DB_URL
 const client = new MongoClient(uri);
+let count=-1;
 
 async function find(skip = 0, limit = 200, query = {}) {
   if (!client.isConnected()) await client.connect();
@@ -10,7 +11,9 @@ async function find(skip = 0, limit = 200, query = {}) {
   const trafficTransaction = database.collection('TrafficTransaction');
   const cursor = trafficTransaction.find(query).limit(limit).skip(skip);
   const allValues = await cursor.toArray();
-  const count = await trafficTransaction.countDocuments(query);
+  if(count<0){
+    const count = await trafficTransaction.countDocuments(query);
+  }
   return { items: allValues, skip: limit + skip, count }
 }
 
